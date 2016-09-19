@@ -2,6 +2,27 @@
  * Created by backand on 3/23/16.
  */
 
+enum EVENTS {
+    SIGNIN,
+    SIGNOUT,
+    SIGNUP
+};
+
+const URLS = {
+    signup: '/1/user/signup',
+    token: '/token',
+    requestResetPassword: '/1/user/requestResetPassword',
+    resetPassword: '/1/user/resetPassword',
+    changePassword: '/1/user/changePassword',
+    socialLoginWithToken: '/1/user/PROVIDER/token',
+    socketUrl: 'https://api.backand.com:4000'
+}
+
+const ERRORS = {
+    NO_EMAIL_SOCIAL_ERROR: 'NO_EMAIL_SOCIAL', 
+    NOT_SIGNEDIN_ERROR: 'The user is not signed up to',
+    ALREADY_SIGNEDUP_ERROR: 'The user already signed up to'
+};
 
 // get token or error message from url in social sign-in popup
 (function () {
@@ -23,39 +44,14 @@ import * as io from 'socket.io-client';
 @Injectable()
 export class BackandService {
 
-    public static enum EVENTS  {
-        SIGNIN,
-        SIGNOUT,
-        SIGNUP
-    };
-
-    private static const URLS = {
-        signup: '/1/user/signup',
-        token: '/token',
-        requestResetPassword: '/1/user/requestResetPassword',
-        resetPassword: '/1/user/resetPassword',
-        changePassword: '/1/user/changePassword',
-        socialLoginWithToken: '/1/user/PROVIDER/token',
-        socketUrl: 'https://api.backand.com:4000'
-    }
-
-    private static const ERRORS = {
-        NO_EMAIL_SOCIAL_ERROR: 'NO_EMAIL_SOCIAL', 
-        NOT_SIGNEDIN_ERROR: 'The user is not signed up to',
-        ALREADY_SIGNEDUP_ERROR: 'The user already signed up to'
-    };
-
-    private static const dummyReturnAddress: string = 'http://www.backandkuku.com';
-
-
-    private static const api_url = 'https://api.backand.com';  
-
-    private static const socialProviders: any = {
+    private api_url: string = 'https://api.backand.com';  
+    private socialProviders: any = {
         github: {name: 'github', label: 'Github', url: 'www.github.com', css: 'github', id: 1},
         google: {name: 'google', label: 'Google', url: 'www.google.com', css: 'google-plus', id: 2},
         facebook: {name: 'facebook', label: 'Facebook', url: 'www.facebook.com', css: 'facebook', id: 3},
         twitter: {name: 'twitter', label: 'Twitter', url: 'www.twitter.com', css: 'twitter', id: 4}
-    };  
+    }; 
+    private dummyReturnAddress: string = 'http://www.backandkuku.com';
     
     // configuration variables
     private app_name:string = 'your app name';
@@ -72,7 +68,7 @@ export class BackandService {
     private username: string;
     
     private socialAuthWindow: any;
-    private statusLogin: Subject<BackandService.EVENTS>;
+    private statusLogin: Subject<EVENTS>;
     private socket: SocketIOClient.Socket;;
 
 
@@ -106,18 +102,18 @@ export class BackandService {
         this.app_name = appName;
     }
 
-    this.setAnonymousToken = function (anonymousToken) {
+    public setAnonymousToken(anonymousToken) {
         this.anonymousToken = anonymousToken;
         return this;
-    };
+    }
 
-    this.setSignUpToken = function (signUpToken) {
+    public setSignUpToken(signUpToken) {
         this.signUpToken = signUpToken;
         return this;
-    };
+    }
 
-   
-
+     
+    // methods
     public getAuthTokenSimple(username, password) {       
         let creds = `username=${username}` +
             `&password=${password}` +
@@ -125,7 +121,7 @@ export class BackandService {
             `&grant_type=password`;
         let header = new Headers();
         header.append('Content-Type', 'application/x-www-form-urlencoded');
-        let url = this.api_url + BackandService.URLS.token;
+        let url = this.api_url + URLS.token;
         var $obs = this.http.post(url, creds, {
                 headers: header
             })
@@ -153,7 +149,7 @@ export class BackandService {
             `&grant_type=password`;
         let header = new Headers();
         header.append('Content-Type', 'application/x-www-form-urlencoded');
-        let url = this.api_url + BackandService.URLS.token;
+        let url = this.api_url + URLS.token;
         var $obs = this.http.post(url, creds, {
                 headers: header
             })
@@ -165,7 +161,7 @@ export class BackandService {
                     this.setTokenHeader(data)
                     localStorage.setItem('username', userData.username);
                     this.loginSocket(data, this.anonymousToken, this.app_name);
-                    this.statusLogin.next(BackandService.EVENTS.SIGNUP);   
+                    this.statusLogin.next(EVENTS.SIGNUP);   
                 },
                 err => {
                     this.statusLogin.error(err);
@@ -192,7 +188,7 @@ export class BackandService {
         };
         let header = new Headers();
         header.append('SignUpToken', this.signUpToken);
-        var $obs = this.http.post(this.api_url + BackandService.URLS.signup, creds,
+        var $obs = this.http.post(this.api_url + URLS.signup, creds,
             {
                 headers: header
             }
@@ -215,7 +211,7 @@ export class BackandService {
                 oldPassword: oldPassword,
                 newPassword: newPassword
         };
-        var $obs = this.http.post(this.api_url + BackandService.URLS.changePassword, creds,
+        var $obs = this.http.post(this.api_url + URLS.changePassword, creds,
             {
                 headers: this.authHeader
             }
@@ -239,7 +235,7 @@ export class BackandService {
     public socialSigninWithToken(provider, token) {
 
         
-        let url = this.api_url + BackandService.URLS.socialLoginWithToken.replace('PROVIDER', provider) + "?accessToken=" + encodeURIComponent(token) + "&appName=" + encodeURI(this.app_name) + "&signupIfNotSignedIn=true";
+        let url = this.api_url + URLS.socialLoginWithToken.replace('PROVIDER', provider) + "?accessToken=" + encodeURIComponent(token) + "&appName=" + encodeURI(this.app_name) + "&signupIfNotSignedIn=true";
         this.clearAuthTokenSimple();
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
@@ -255,7 +251,7 @@ export class BackandService {
                 this.setTokenHeader(data.access_token);
                 localStorage.setItem('user', data);
                 this.loginSocket(data.access_token, this.anonymousToken, this.app_name);
-                this.statusLogin.next(BackandService.EVENTS.SIGNUP);   
+                this.statusLogin.next(EVENTS.SIGNUP);   
             },
             err => {
                 this.logError(err);
@@ -271,10 +267,10 @@ export class BackandService {
     public socialAuth(provider: string, isSignUp: boolean, spec: any = null, email: string = null) 
     {
         if (!this.statusLogin){
-            this.statusLogin = new Subject<BackandService.EVENTS>();
+            this.statusLogin = new Subject<EVENTS>();
         }
         
-        if (!BackandService.socialProviders[provider]) {
+        if (!this.socialProviders[provider]) {
             throw Error('Unknown Social Provider');
         }
         
@@ -282,7 +278,7 @@ export class BackandService {
             let windowUrl = this.api_url + '/1/'
                 + this.getSocialUrl(provider, isSignUp)
                 + '&appname=' + this.app_name + (email ? ("&email=" + email) : '')
-                + '&returnAddress=' + BackandService.dummyReturnAddress;                              
+                + '&returnAddress=' + this.dummyReturnAddress;                              
             this.socialAuthWindow = window.open(
                 windowUrl,
                 spec || 'left=1, top=1, width=600, height=600');
@@ -290,7 +286,7 @@ export class BackandService {
             let source = Observable.fromEvent(this.socialAuthWindow, 'loadstart')               
             source.subscribe((e: any) => {
 
-                if (e.url.indexOf(BackandService.dummyReturnAddress) == 0) { // mean startWith
+                if (e.url.indexOf(this.dummyReturnAddress) == 0) { // mean startWith
                     
                     var url = e.url;
                     // handle case of misformatted json from server
@@ -303,10 +299,10 @@ export class BackandService {
                     
                     // error return from server
                     if (breakdown.error) {                              
-                        if (!isSignUp && this.callSignupOnSingInSocialError && breakdown.error.message.indexOf(BackandService.ERRORS.NOT_SIGNEDIN_ERROR) > -1) {  // check is right error
+                        if (!isSignUp && this.callSignupOnSingInSocialError && breakdown.error.message.indexOf(ERRORS.NOT_SIGNEDIN_ERROR) > -1) {  // check is right error
                             this.socialAuth(provider, true, spec);
                         }
-                        if (breakdown.error.message.indexOf(BackandService.ERRORS.ALREADY_SIGNEDUP_ERROR) > -1) {                            
+                        if (breakdown.error.message.indexOf(ERRORS.ALREADY_SIGNEDUP_ERROR) > -1) {                            
                             this.statusLogin.error(breakdown.error.message + ' (signing in with ' + breakdown.error.provider + ')');
                         }
                     }
@@ -357,10 +353,10 @@ export class BackandService {
                 
                            
                 if (error) {
-                    if (this.callSignupOnSingInSocialError && error.message.indexOf(BackandService.BackandService.ERRORS.NOT_SIGNEDIN_ERROR) > -1) {  // check is right error
+                    if (this.callSignupOnSingInSocialError && error.message.indexOf(ERRORS.NOT_SIGNEDIN_ERROR) > -1) {  // check is right error
                         this.socialAuth(provider, true, spec);
                     }
-                    if (isSignUp && error.message.indexOf(BackandService.ERRORS.ALREADY_SIGNEDUP_ERROR) > -1) {                       
+                    if (isSignUp && error.message.indexOf(ERRORS.ALREADY_SIGNEDUP_ERROR) > -1) {                       
                         this.statusLogin.error(error.message + ' (signing in with ' + error.provider + ')');
                     }
                 }
@@ -381,7 +377,7 @@ export class BackandService {
         if (this.isMobile){
             let that: any = this;
             if (!this.statusLogin){
-                this.statusLogin = new Subject<BackandService.EVENTS>();
+                this.statusLogin = new Subject<EVENTS>();
             }
             let permissions: string[] = ['public_profile', 'email'];
             Facebook.login(permissions).then( 
@@ -449,7 +445,7 @@ export class BackandService {
     public loginSocket(token, anonymousToken, appName) {
     
 
-        this.socket = io.connect(BackandService.URLS.socketUrl, {'forceNew':true });
+        this.socket = io.connect(URLS.socketUrl, {'forceNew':true });
 
         this.socket.on('connect', () => {
             console.log('connected');
@@ -481,20 +477,20 @@ export class BackandService {
         return socketStream;
     }
 
-    private getAuthType():string {
+    public getAuthType():string {
         return this.auth_type;
     }
 
-    private getAuthStatus():string {
+    public getAuthStatus():string {
         return this.auth_status;
     }
 
-    private getUsername():string {
+    public getUsername():string {
         return this.username;
     }
 
     private getSocialUrl(providerName: string, isSignup: boolean) {
-        let provider = BackandService.socialProviders[providerName];
+        let provider = this.socialProviders[providerName];
         let action = isSignup ? 'up' : 'in';
         return 'user/socialSign' + action +
             '?provider=' + provider.label +
@@ -513,11 +509,11 @@ export class BackandService {
         return breakdown;
     }
 
-    private extractErrorMessage(err) {
+    public extractErrorMessage(err) {
         return JSON.parse(err._body).error_description;
     }
 
-    private useAnoymousAuth() {      
+    public useAnoymousAuth() {      
         this.setAnonymousHeader();
     }
 
@@ -551,7 +547,7 @@ export class BackandService {
         return authHeader;
     }
 
-    private logError(err) {
+    public logError(err) {
         console.error('Error: ' + err);
     }
 }
