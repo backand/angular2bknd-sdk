@@ -472,7 +472,7 @@ export class BackandService {
         }
     }
 
-    public subscribeSocket(eventName: string) {
+    public on(eventName: string) {
         let socketStream = Observable.fromEvent(this.socket, eventName);
         return socketStream;
     }
