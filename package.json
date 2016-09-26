@@ -2,7 +2,7 @@
   "name": "angular2bknd-sdk",
   "version": "1.1.2",
   "description": "typescript SDK for Backand",
-  "main": "backandService.ts",
+  "main": "src/backandService.ts",
   "author": "Yoram Kornatzky",
   "dependencies": {
     "@angular/common": "2.0.0-rc.3",
