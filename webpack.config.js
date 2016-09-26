@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
   context:path.join( __dirname, '/src'),
-  entry: 'bootstrap.ts',
+  entry: 'backandService.ts',
 
   resolve: {
     root: [path.join(__dirname, "/src")],
