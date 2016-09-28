@@ -2,13 +2,13 @@
  * Created by backand on 3/23/16.
  */
 
-enum EVENTS {
+export enum EVENTS {
     SIGNIN,
     SIGNOUT,
     SIGNUP
 };
 
-const URLS = {
+export const URLS = {
     signup: '/1/user/signup',
     token: '/token',
     requestResetPassword: '/1/user/requestResetPassword',
@@ -18,7 +18,7 @@ const URLS = {
     socketUrl: 'https://api.backand.com:4000'
 }
 
-const ERRORS = {
+export const ERRORS = {
     NO_EMAIL_SOCIAL_ERROR: 'NO_EMAIL_SOCIAL', 
     NOT_SIGNEDIN_ERROR: 'The user is not signed up to',
     ALREADY_SIGNEDUP_ERROR: 'The user already signed up to'
@@ -36,12 +36,17 @@ const ERRORS = {
 }());
 
 import {Observable, BehaviorSubject, Subject} from 'rxjs';
-import {Http, Headers, HTTP_BINDINGS, URLSearchParams} from '@angular/http'
-import {Injectable} from '@angular/core';
-import {Facebook} from 'ionic-native';
+import {HttpModule
+    //, Headers, HTTP_BINDINGS, URLSearchParams
+    } from '@angular/http'
+import {Injectable, NgModule} from '@angular/core';
+// import {Facebook} from 'ionic-native';
 import * as io from 'socket.io-client';
 
-@Injectable()
+@NgModule({
+  declarations: [ BackandService ],
+  imports: [ HttpModule, Observable, BehaviorSubject, Subject, io]
+})
 export class BackandService {
 
     private api_url: string = 'https://api.backand.com';  
@@ -373,36 +378,36 @@ export class BackandService {
         return this.statusLogin;
     } 
 
-    public inAppSocial(provider: string) {
-        if (this.isMobile){
-            let that: any = this;
-            if (!this.statusLogin){
-                this.statusLogin = new Subject<EVENTS>();
-            }
-            let permissions: string[] = ['public_profile', 'email'];
-            Facebook.login(permissions).then( 
-                function(data) {
-                    console.log(data);
-                    if (data.status.toLowerCase() == 'connected'){
-                        let token: string = data.authResponse.accessToken;
-                        that.socialSigninWithToken(provider, token); 
-                    }
-                    else{
-                       that.statusLogin.error(data.status); 
-                    }
+    // public inAppSocial(provider: string) {
+    //     if (this.isMobile){
+    //         let that: any = this;
+    //         if (!this.statusLogin){
+    //             this.statusLogin = new Subject<EVENTS>();
+    //         }
+    //         let permissions: string[] = ['public_profile', 'email'];
+    //         Facebook.login(permissions).then( 
+    //             function(data) {
+    //                 console.log(data);
+    //                 if (data.status.toLowerCase() == 'connected'){
+    //                     let token: string = data.authResponse.accessToken;
+    //                     that.socialSigninWithToken(provider, token); 
+    //                 }
+    //                 else{
+    //                    that.statusLogin.error(data.status); 
+    //                 }
 
-                },
-                function(err) {
-                    console.log(err);
-                    that.statusLogin.error(err);
-                }
-            );
-            return this.statusLogin;
-        }
-        else{
-            this.socialAuth(provider, true);
-        }
-    }
+    //             },
+    //             function(err) {
+    //                 console.log(err);
+    //                 that.statusLogin.error(err);
+    //             }
+    //         );
+    //         return this.statusLogin;
+    //     }
+    //     else{
+    //         this.socialAuth(provider, true);
+    //     }
+    // }
 
     public postItem(name, description) {
         let data = JSON.stringify({ name: name, description: description });
