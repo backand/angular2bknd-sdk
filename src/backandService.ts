@@ -15,7 +15,7 @@ export const URLS = {
     resetPassword: '/1/user/resetPassword',
     changePassword: '/1/user/changePassword',
     socialLoginWithToken: '/1/user/PROVIDER/token',
-    socketUrl: 'https://api.backand.com:4000'
+    socketUrl: 'https://socket.backand.com'
 }
 
 export const ERRORS = {
@@ -44,8 +44,8 @@ import {Injectable, NgModule} from '@angular/core';
 import * as io from 'socket.io-client';
 
 @NgModule({
-  declarations: [ BackandService ],
-  imports: [ HttpModule, Observable, BehaviorSubject, Subject, io]
+  declarations: [ BackandService, EVENTS, URLS, ERRORS ],
+  imports: [ HttpModule, Observable, BehaviorSubject, Subject, SocketIOClient.Socket]
 })
 export class BackandService {
 
@@ -86,7 +86,10 @@ export class BackandService {
             if (this.auth_type == 'Token'){
                 this.username = localStorage.getItem('username');
             }
-            this.loginSocket(this.auth_token.header_value, this.anonymousToken, this.app_name);
+            this.app_name = localStorage.getItem('app_name');
+            this.anonymousToken = localStorage.getItem('anonymousToken');
+            this.loginSocket(this.auth_token.header_value, 
+                this.anonymousToken, this.app_name);
         }    
         else{
             this.auth_token = {header_name: '', header_value: ''};
@@ -105,16 +108,17 @@ export class BackandService {
 
     public setAppName(appName: string) {
         this.app_name = appName;
+        localStorage.setItem('app_name', appName);
     }
 
     public setAnonymousToken(anonymousToken) {
         this.anonymousToken = anonymousToken;
-        return this;
+        localStorage.setItem('anonymousToken', anonymousToken);
     }
 
     public setSignUpToken(signUpToken) {
         this.signUpToken = signUpToken;
-        return this;
+        localStorage.setItem('signUpToken', signUpToken);
     }
 
      
@@ -237,10 +241,12 @@ export class BackandService {
         return $obs;
     }
 
-    public socialSigninWithToken(provider, token) {
-
+    public socialSigninWithToken(provider, token) {  
         
-        let url = this.api_url + URLS.socialLoginWithToken.replace('PROVIDER', provider) + "?accessToken=" + encodeURIComponent(token) + "&appName=" + encodeURI(this.app_name) + "&signupIfNotSignedIn=true";
+        let url = this.api_url + URLS.socialLoginWithToken.replace('PROVIDER', provider) + 
+            "?accessToken=" + encodeURIComponent(token) + 
+            "&appName=" + encodeURI(this.app_name) + 
+            "&signupIfNotSignedIn=" + (this.callSignupOnSingInSocialError ? "true" : "false");
         this.clearAuthTokenSimple();
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
@@ -378,36 +384,36 @@ export class BackandService {
         return this.statusLogin;
     } 
 
-    // public inAppSocial(provider: string) {
-    //     if (this.isMobile){
-    //         let that: any = this;
-    //         if (!this.statusLogin){
-    //             this.statusLogin = new Subject<EVENTS>();
-    //         }
-    //         let permissions: string[] = ['public_profile', 'email'];
-    //         Facebook.login(permissions).then( 
-    //             function(data) {
-    //                 console.log(data);
-    //                 if (data.status.toLowerCase() == 'connected'){
-    //                     let token: string = data.authResponse.accessToken;
-    //                     that.socialSigninWithToken(provider, token); 
-    //                 }
-    //                 else{
-    //                    that.statusLogin.error(data.status); 
-    //                 }
+    public inAppSocial(provider: string) {
+        if (this.isMobile){
+            let that: any = this;
+            if (!this.statusLogin){
+                this.statusLogin = new Subject<EVENTS>();
+            }
+            let permissions: string[] = ['public_profile', 'email'];
+            Facebook.login(permissions).then( 
+                function(data) {
+                    console.log(data);
+                    if (data.status.toLowerCase() == 'connected'){
+                        let token: string = data.authResponse.accessToken;
+                        that.socialSigninWithToken(provider, token); 
+                    }
+                    else{
+                       that.statusLogin.error(data.status); 
+                    }
 
-    //             },
-    //             function(err) {
-    //                 console.log(err);
-    //                 that.statusLogin.error(err);
-    //             }
-    //         );
-    //         return this.statusLogin;
-    //     }
-    //     else{
-    //         this.socialAuth(provider, true);
-    //     }
-    // }
+                },
+                function(err) {
+                    console.log(err);
+                    that.statusLogin.error(err);
+                }
+            );
+            return this.statusLogin;
+        }
+        else{
+            this.socialAuth(provider, true);
+        }
+    }
 
     public postItem(name, description) {
         let data = JSON.stringify({ name: name, description: description });
