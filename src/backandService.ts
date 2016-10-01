@@ -36,17 +36,14 @@ export const ERRORS = {
 }());
 
 import {Observable, BehaviorSubject, Subject} from 'rxjs';
-import {HttpModule
-    //, Headers, HTTP_BINDINGS, URLSearchParams
+import {HttpModule,
+    Headers
+    //HTTP_BINDINGS, URLSearchParams
     } from '@angular/http'
-import {Injectable, NgModule} from '@angular/core';
+import {Injectable, Inject} from '@angular/core';
 // import {Facebook} from 'ionic-native';
 import * as io from 'socket.io-client';
 
-@NgModule({
-  declarations: [ BackandService, EVENTS, URLS, ERRORS ],
-  imports: [ HttpModule, Observable, BehaviorSubject, Subject, SocketIOClient.Socket]
-})
 export class BackandService {
 
     private api_url: string = 'https://api.backand.com';  
@@ -384,36 +381,36 @@ export class BackandService {
         return this.statusLogin;
     } 
 
-    public inAppSocial(provider: string) {
-        if (this.isMobile){
-            let that: any = this;
-            if (!this.statusLogin){
-                this.statusLogin = new Subject<EVENTS>();
-            }
-            let permissions: string[] = ['public_profile', 'email'];
-            Facebook.login(permissions).then( 
-                function(data) {
-                    console.log(data);
-                    if (data.status.toLowerCase() == 'connected'){
-                        let token: string = data.authResponse.accessToken;
-                        that.socialSigninWithToken(provider, token); 
-                    }
-                    else{
-                       that.statusLogin.error(data.status); 
-                    }
+    // public inAppSocial(provider: string) {
+    //     if (this.isMobile){
+    //         let that: any = this;
+    //         if (!this.statusLogin){
+    //             this.statusLogin = new Subject<EVENTS>();
+    //         }
+    //         let permissions: string[] = ['public_profile', 'email'];
+    //         Facebook.login(permissions).then( 
+    //             function(data) {
+    //                 console.log(data);
+    //                 if (data.status.toLowerCase() == 'connected'){
+    //                     let token: string = data.authResponse.accessToken;
+    //                     that.socialSigninWithToken(provider, token); 
+    //                 }
+    //                 else{
+    //                    that.statusLogin.error(data.status); 
+    //                 }
 
-                },
-                function(err) {
-                    console.log(err);
-                    that.statusLogin.error(err);
-                }
-            );
-            return this.statusLogin;
-        }
-        else{
-            this.socialAuth(provider, true);
-        }
-    }
+    //             },
+    //             function(err) {
+    //                 console.log(err);
+    //                 that.statusLogin.error(err);
+    //             }
+    //         );
+    //         return this.statusLogin;
+    //     }
+    //     else{
+    //         this.socialAuth(provider, true);
+    //     }
+    // }
 
     public postItem(name, description) {
         let data = JSON.stringify({ name: name, description: description });
@@ -562,3 +559,6 @@ export class BackandService {
         console.error('Error: ' + err);
     }
 }
+
+
+
