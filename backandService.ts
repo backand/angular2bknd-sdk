@@ -41,6 +41,7 @@ import {Injectable, Inject} from '@angular/core';
 // import {Facebook} from 'ionic-native';
 // import * as io from 'socket.io-client';
 
+@Injectable()
 export class BackandService {
 
     private api_url: string = 'https://api.backand.com';  
