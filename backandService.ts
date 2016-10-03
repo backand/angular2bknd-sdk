@@ -36,13 +36,10 @@ export const ERRORS = {
 }());
 
 import {Observable, BehaviorSubject, Subject} from 'rxjs';
-import {HttpModule,
-    Headers
-    //HTTP_BINDINGS, URLSearchParams
-    } from '@angular/http'
+import {Http, Headers} from '@angular/http'
 import {Injectable, Inject} from '@angular/core';
 // import {Facebook} from 'ionic-native';
-import * as io from 'socket.io-client';
+// import * as io from 'socket.io-client';
 
 export class BackandService {
 
@@ -71,7 +68,7 @@ export class BackandService {
     
     private socialAuthWindow: any;
     private statusLogin: Subject<EVENTS>;
-    private socket: SocketIOClient.Socket;;
+    // private socket: SocketIOClient.Socket;
 
 
     constructor(public http:Http) {
@@ -453,36 +450,36 @@ export class BackandService {
     public loginSocket(token, anonymousToken, appName) {
     
 
-        this.socket = io.connect(URLS.socketUrl, {'forceNew':true });
+        // this.socket = io.connect(URLS.socketUrl, {'forceNew':true });
 
-        this.socket.on('connect', () => {
-            console.log('connected');
-            this.socket.emit("login", token, anonymousToken, appName);
-        });
+        // this.socket.on('connect', () => {
+        //     console.log('connected');
+        //     this.socket.emit("login", token, anonymousToken, appName);
+        // });
 
-        this.socket.on('disconnect', () => {
-            console.log('disconnect');
-        });
+        // this.socket.on('disconnect', () => {
+        //     console.log('disconnect');
+        // });
 
-        this.socket.on('reconnecting', () => {
-          console.log('reconnecting');
-        });
+        // this.socket.on('reconnecting', () => {
+        //   console.log('reconnecting');
+        // });
 
-        this.socket.on('error', (error: string) => {
-          console.log('error: ${error}');
-        });
+        // this.socket.on('error', (error: string) => {
+        //   console.log('error: ${error}');
+        // });
 
     }
 
     public logoutSocket() {
-        if (this.socket){
-            this.socket.close();
-        }
+        // if (this.socket){
+        //     this.socket.close();
+        // }
     }
 
     public on(eventName: string) {
-        let socketStream = Observable.fromEvent(this.socket, eventName);
-        return socketStream;
+        // let socketStream = Observable.fromEvent(this.socket, eventName);
+        // return socketStream;
     }
 
     public getAuthType():string {
