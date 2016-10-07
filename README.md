@@ -1,6 +1,6 @@
 # angular2bknd-sdk
 
-Backand SDK for Angular 2 
+Beta version - Backand SDK for Angular 2 
 
 ## Customize for Your App
 
