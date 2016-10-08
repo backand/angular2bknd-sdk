@@ -2,10 +2,18 @@
 
 Beta version - Backand SDK for Angular 2 
 
+## install
+
+    npm install angular2bknd-sdk
+
+# Dependencies
+
+    npm install @types/node --save-dev 
+    npm install @types/socket.io-client --save-dev 
+
 ## Customize for Your App
 
 In file, `app/services/backandService.ts`, in `BackandService`, set this local variables:
-
     
     app_name:string = 'your app name';
     signUpToken: string = 'your signup token';

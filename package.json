@@ -17,13 +17,8 @@
     "socket.io-client": "^1.4.8",
     "zone.js": "^0.6.12",
   },
-  "devDependencies": {
-    "@types/node": "6.0.45",
-    "@types/socket.io-client": "1.4.27",
-  },
   "scripts": {
-    "prestart": "npm install; typings install",
-    "postinstall": "typings install"
+    "prestart": "npm install"
   },
   "license": "MIT"
 }
