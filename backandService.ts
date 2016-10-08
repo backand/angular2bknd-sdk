@@ -496,6 +496,31 @@ export class BackandService {
         return this.username;
     }
 
+    public getUserDetails(force): Observable<any> {
+        let $obs = this.http.get(this.api_url + '/api/account/profile', 
+            {
+                headers: this.authHeader
+            }
+        )
+        .map(res => res.json());
+
+        $obs.subscribe(
+            data => {                           
+                localStorage.setItem('user', Object.assign({}, localStorage.getItem('user'), data));
+            },
+            err => {
+                this.logError(err);
+            },
+            () => { }
+        );
+        if (force){
+            $obs.next(localStorage.getItem('user'));
+        }
+        return $obs;
+
+    }
+
+
     private getSocialUrl(providerName: string, isSignup: boolean) {
         let provider = this.socialProviders[providerName];
         let action = isSignup ? 'up' : 'in';
