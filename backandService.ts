@@ -497,27 +497,34 @@ export class BackandService {
     }
 
     public getUserDetails(force): Observable<any> {
-        let $obs = this.http.get(this.api_url + '/api/account/profile', 
-            {
-                headers: this.authHeader
-            }
-        )
-        .map(res => res.json());
-
-        $obs.subscribe(
-            data => {                           
-                localStorage.setItem('user', Object.assign({}, localStorage.getItem('user'), data));
-            },
-            err => {
-                this.logError(err);
-            },
-            () => { }
-        );
         if (force){
-            $obs.next(localStorage.getItem('user'));
-        }
-        return $obs;
+            let $obs = this.http.get(this.api_url + '/api/account/profile', 
+                {
+                    headers: this.authHeader
+                }
+            )
+            .map(res => res.json());
 
+            $obs.subscribe(
+                data => {                           
+                    localStorage.setItem('user', Object.assign({}, localStorage.getItem('user'), data));
+                },
+                err => {
+                    this.logError(err);
+                },
+                () => { }
+            );
+            if (force){
+                $obs.next(localStorage.getItem('user'));
+            }
+            return $obs;
+        }
+        else{
+            let $obs = Observable.create(function(observer){
+                observer.onNext(localStorage.getItem('user'));
+            });
+            return $obs;
+        }
     }
 
 
