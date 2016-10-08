@@ -36,10 +36,10 @@ export const ERRORS = {
 }());
 
 import {Observable, BehaviorSubject, Subject} from 'rxjs';
-import {Http, Headers} from '@angular/http'
-import {Injectable, Inject} from '@angular/core';
+import {Http, Headers, URLSearchParams} from '@angular/http'
+import {Injectable} from '@angular/core';
 // import {Facebook} from 'ionic-native';
-// import * as io from 'socket.io-client';
+import * as io from 'socket.io-client';
 
 @Injectable()
 export class BackandService {
@@ -69,7 +69,7 @@ export class BackandService {
     
     private socialAuthWindow: any;
     private statusLogin: Subject<EVENTS>;
-    // private socket: SocketIOClient.Socket;
+    private socket: SocketIOClient.Socket;;
 
 
     constructor(public http:Http) {
@@ -118,7 +118,7 @@ export class BackandService {
 
      
     // methods
-    public getAuthTokenSimple(username, password) {       
+    public getAuthTokenSimple(username, password): Observable<any> {       
         let creds = `username=${username}` +
             `&password=${password}` +
             `&appName=${this.app_name}` +
@@ -147,7 +147,7 @@ export class BackandService {
     }
 
 
-    public signinWithToken(userData) {
+    public signinWithToken(userData): Observable<any> {
         let creds = `accessToken=${userData.access_token}` +
             `&appName=${this.app_name}` +
             `&grant_type=password`;
@@ -182,7 +182,7 @@ export class BackandService {
         localStorage.removeItem('username');
     }
 
-    public signUp(email, password, confirmPassword, firstName, lastName) {
+    public signUp(email, password, confirmPassword, firstName, lastName): Observable<any> {
         let creds = {
                 firstName: firstName,
                 lastName: lastName,
@@ -210,7 +210,7 @@ export class BackandService {
         return $obs;
     }
 
-    public changePassword(oldPassword, newPassword) {
+    public changePassword(oldPassword, newPassword): Observable<any> {
         let creds = {
                 oldPassword: oldPassword,
                 newPassword: newPassword
@@ -236,12 +236,13 @@ export class BackandService {
         return $obs;
     }
 
-    public socialSigninWithToken(provider, token) {  
-        
+    public socialSigninWithToken(provider, token): Observable<any> {
+
         let url = this.api_url + URLS.socialLoginWithToken.replace('PROVIDER', provider) + 
             "?accessToken=" + encodeURIComponent(token) + 
             "&appName=" + encodeURI(this.app_name) + 
             "&signupIfNotSignedIn=" + (this.callSignupOnSingInSocialError ? "true" : "false");
+
         this.clearAuthTokenSimple();
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
@@ -451,36 +452,36 @@ export class BackandService {
     public loginSocket(token, anonymousToken, appName) {
     
 
-        // this.socket = io.connect(URLS.socketUrl, {'forceNew':true });
+        this.socket = io.connect(URLS.socketUrl, {'forceNew':true });
 
-        // this.socket.on('connect', () => {
-        //     console.log('connected');
-        //     this.socket.emit("login", token, anonymousToken, appName);
-        // });
+        this.socket.on('connect', () => {
+            console.log('connected');
+            this.socket.emit("login", token, anonymousToken, appName);
+        });
 
-        // this.socket.on('disconnect', () => {
-        //     console.log('disconnect');
-        // });
+        this.socket.on('disconnect', () => {
+            console.log('disconnect');
+        });
 
-        // this.socket.on('reconnecting', () => {
-        //   console.log('reconnecting');
-        // });
+        this.socket.on('reconnecting', () => {
+          console.log('reconnecting');
+        });
 
-        // this.socket.on('error', (error: string) => {
-        //   console.log('error: ${error}');
-        // });
+        this.socket.on('error', (error: string) => {
+          console.log('error: ${error}');
+        });
 
     }
 
     public logoutSocket() {
-        // if (this.socket){
-        //     this.socket.close();
-        // }
+        if (this.socket){
+            this.socket.close();
+        }
     }
 
     public on(eventName: string) {
-        // let socketStream = Observable.fromEvent(this.socket, eventName);
-        // return socketStream;
+        let socketStream = Observable.fromEvent(this.socket, eventName);
+        return socketStream;
     }
 
     public getAuthType():string {
@@ -519,7 +520,7 @@ export class BackandService {
         return JSON.parse(err._body).error_description;
     }
 
-    public useAnoymousAuth() {      
+    public useAnonymousAuth() {      
         this.setAnonymousHeader();
     }
 
@@ -557,6 +558,3 @@ export class BackandService {
         console.error('Error: ' + err);
     }
 }
-
-
-
