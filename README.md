@@ -1,87 +1,74 @@
 # angular2bknd-sdk
 
-Beta version - Backand SDK for Angular 2 
+Backand SDK for Angular 2 
+
+Compsatible with AngularJS 2.0.0
 
 ## install
 
-    npm install angular2bknd-sdk
+    npm install angular2bknd-sdk --save
 
-# Dependencies
+## Dependencies
 
     npm install @types/node --save-dev 
     npm install @types/socket.io-client --save-dev 
 
-## Customize for Your App
+## Import
 
-In file, `app/services/backandService.ts`, in `BackandService`, set this local variables:
+In `src/app/app.module.ts`,
+
+    import { BackandService } from 'angular2bknd-sdk';
+
+add `BackandService` to the `providers` aaray.
+
+In each component where you use Backand, import it:
+
+    import { BackandService } from 'angular2bknd-sdk';
+
+and then in the constructor:
+
+    constructor(private backandService:BackandService){}
+
+Use it as `this.backandService`
+
+## Set Your App Details
+
+1. In `src/app/app.component.ts`:
     
-    app_name:string = 'your app name';
-    signUpToken: string = 'your signup token';
-    anonymousToken: string = 'your anonymousToken token';
+        this.backandService.setAppName('your app name');
+        this.backandService.setSignUpToken('your backand signup token');
+        this.backandService.setAnonymousToken('your backand anonymous token');
 
-## Setup of Platform
+2. Do we call signup if we tried to sign in via a social network, 
+   and the user is not signed up for the app? (true by defaule)
 
-This is done in `app.ts`,  within `platform.ready()`,
+        this.backandService.setRunSignupAfterErrorInSigninSocial(true);
 
-* Are we on a mobile or desktop browser?
 
-      let isMobile = platform.is('mobile');
-      backandService.setIsMobile(isMobile);
+## Mobile
 
-* Do we call signup if we tried to sign in via a social networkm and 
- the user is not signed up for the app?
+In `src/app/app.component.ts`:
 
-    backandService.setRunSignupAfterErrorInSigninSocial(true);
+    this.backandService.setIsMobile(true);
 
 ## CRUD
 
-To fetch, create, and filter rows, from an object, say `stuff`, modify 
-the `url` used in these functions:
+To fetch, create, and filter rows, from an object, say `stuff`, the CRUD functions in BackandService, should receive `'stuff'` as their first argument
 
     getItems
     filterItems
     postItem
 
-replacing `todo` with the name of your object, `stuff`
-
 ## Social Signup 
 
 The app opens a dialog supplied by the social network. 
 
-## In App
-
-### Facebook
-
-Use the Facebook Connect plugin to obtain access to the native FB application on iOS and Android.
-
-Install it with: 
-
-    ionic plugin add cordova-plugin-facebook4 --save --variable APP_ID="<Facebook APP ID>" --variable APP_NAME="<Facebook APP NAME>"
-
-Use `BackandService` function `inappSocial`
-
 ## Socket Service
-
-1. Add to `package.json` the dependency, 
   
-    "socket.io-client": "^1.4.8"
-  
-Add to `typings.json` the global dependencies:
+* Socket login and logout are done automatially as part of the login and logout calls, respectively.
 
-    "node": "registry:dt/node#6.0.0+20160514165920",
-    "socket.io-client": "registry:dt/socket.io-client#1.4.4+20160317120654"
-   
-2. Install dependencies
-
-  npm install
-  typings install
-  
-3. To login via socket call `BackandService.loginSocket`
-    
-4. To logout from socket call `BackandService.logoutSocket`
-
-5. To subscribe to event `items_updated` from server side via sockets, 
-call `BackandService.susbcribeSocket` and in your controller, subscribe with,
+I* To subscribe to event `items_updated` from server side via sockets, 
+call `this.backandService.susbcribeSocket` and in your controller, subscribe with,
 
     this.backandService.subscribeSocket('items_updated')
       .subscribe(

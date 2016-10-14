@@ -411,10 +411,10 @@ export class BackandService {
     //     }
     // }
 
-    public postItem(name, description) {
+    public postItem(object, name, description) {
         let data = JSON.stringify({ name: name, description: description });
 
-        return this.http.post(this.api_url + '/1/objects/todo?returnObject=true', data,
+        return this.http.post(this.api_url + '/1/objects/' + object + '?returnObject=true', data,
             {
                 headers: this.authHeader
             })
@@ -422,15 +422,15 @@ export class BackandService {
             .map(res => res.json());           
     }
 
-    public getItems() {
-        return this.http.get(this.api_url + '/1/objects/todo?returnObject=true', {
+    public getItems(object) {
+        return this.http.get(this.api_url + '/1/objects/' + object + '?returnObject=true', {
                 headers: this.authHeader
             })
             .retry(3)
             .map(res => res.json().data);
     }
 
-    public filterItems(query) {
+    public filterItems(object, query) {
         let filter = 
             [
               {
@@ -441,7 +441,7 @@ export class BackandService {
             ]
         ;
 
-        return this.http.get(this.api_url + '/1/objects/todo?filter=' + encodeURI(JSON.stringify(filter)), 
+        return this.http.get(this.api_url + '/1/objects/' + object + '?filter=' + encodeURI(JSON.stringify(filter)), 
             {
                 headers: this.authHeader
             })
