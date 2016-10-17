@@ -71,25 +71,14 @@ export class BackandService {
     private statusLogin: Subject<EVENTS>;
     private socket: SocketIOClient.Socket;;
 
-
     constructor(public http:Http) {
-        let storedToken = localStorage.getItem('auth_token');
-        if (storedToken){
-            this.auth_token = JSON.parse(storedToken);
-            this.auth_type = this.auth_token.header_name == 'Anonymous' ? 'Anonymous' : 'Token';
-            this.auth_status = 'OK';
-            if (this.auth_type == 'Token'){
-                this.username = localStorage.getItem('username');
-            }
-            this.app_name = localStorage.getItem('app_name');
-            this.anonymousToken = localStorage.getItem('anonymousToken');
+        if (this.setAuthenticationState()){
             this.loginSocket(this.auth_token.header_value, 
                 this.anonymousToken, this.app_name);
-        }    
+        }
         else{
             this.auth_token = {header_name: '', header_value: ''};
-        }
-        
+        }     
     }
 
     // configuration of SDK
@@ -136,6 +125,7 @@ export class BackandService {
                     this.setTokenHeader(data)
                     localStorage.setItem('username', username);
                     this.loginSocket(data, this.anonymousToken, this.app_name);
+                    this.setAuthenticationState();
                 },
                 err => {
                     console.log(err);
@@ -180,6 +170,7 @@ export class BackandService {
         this.auth_token = {header_name: '', header_value: ''};
         localStorage.removeItem('auth_token');
         localStorage.removeItem('username');
+        this.setAuthenticationState();
     }
 
     public signUp(email, password, confirmPassword, firstName, lastName): Observable<any> {
@@ -496,6 +487,25 @@ export class BackandService {
 
     public getUsername():string {
         return this.username;
+    }
+
+    private setAuthenticationState(): boolean {
+        let storedToken = localStorage.getItem('auth_token');
+        if (storedToken){
+            this.auth_token = JSON.parse(storedToken);
+            this.auth_type = this.auth_token.header_name == 'Anonymous' ? 'Anonymous' : 'Token';
+            this.auth_status = 'OK';
+            if (this.auth_type == 'Token'){
+                this.username = localStorage.getItem('username');
+            }
+            this.app_name = localStorage.getItem('app_name');
+            this.anonymousToken = localStorage.getItem('anonymousToken');
+            return true;
+        }    
+        else{
+            this.auth_token = {header_name: '', header_value: ''};
+            return false;
+        }
     }
 
     private getSocialUrl(providerName: string, isSignup: boolean) {
