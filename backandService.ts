@@ -118,14 +118,15 @@ export class BackandService {
         var $obs = this.http.post(url, creds, {
                 headers: header
             })
-            .map(res => this.getToken(res));
+            .map(res => res.json());
 
           $obs.subscribe(
                 data => {
-                    this.setTokenHeader(data)
+                    this.setTokenHeader(data.access_token)
                     localStorage.setItem('username', username);
-                    this.loginSocket(data, this.anonymousToken, this.app_name);
+                    localStorage.setItem('user', data);
                     this.setAuthenticationState();
+                    this.loginSocket(data, this.anonymousToken, this.app_name);
                 },
                 err => {
                     console.log(err);
@@ -147,13 +148,14 @@ export class BackandService {
         var $obs = this.http.post(url, creds, {
                 headers: header
             })
-            .map(res => this.getToken(res));
+            .map(res => res.json());
 
 
           $obs.subscribe(
                 data => {
-                    this.setTokenHeader(data)
-                    localStorage.setItem('username', userData.username);
+                    this.setTokenHeader(data.access_token);
+                    localStorage.setItem('username', data.username);
+                    localStorage.setItem('user', data);
                     this.loginSocket(data, this.anonymousToken, this.app_name);
                     this.statusLogin.next(EVENTS.SIGNUP);   
                 },
@@ -485,8 +487,24 @@ export class BackandService {
         return this.auth_status;
     }
 
+    // user details
     public getUsername():string {
         return this.username;
+    }
+
+    public getUserDetails() {
+        let userDetails = <any> localStorage.getItem('user');
+        return userDetails;
+    }
+
+    public getUserRole(): string {
+        let userDetails = <any> localStorage.getItem('user');
+        if (userDetails){
+            return userDetails.role;
+        }
+        else{
+            return null;
+        }
     }
 
     private setAuthenticationState(): boolean {
