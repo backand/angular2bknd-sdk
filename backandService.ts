@@ -492,11 +492,6 @@ export class BackandService {
         return this.username;
     }
 
-    // user details
-    public getUsername():string {
-        return this.username;
-    }
-
     public getUserDetails(force: boolean) {
         if (force){
             let $obs = this.http.get(this.api_url + '/api/account/profile', {
