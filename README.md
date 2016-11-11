@@ -19,7 +19,7 @@ In `src/app/app.module.ts`,
 
     import { BackandService } from 'angular2bknd-sdk';
 
-add `BackandService` to the `providers` aaray.
+add `BackandService` to the `providers` aray.
 
 In each component where you use Backand, import it:
 
@@ -81,4 +81,16 @@ call `this.backandService.susbcribeSocket` and in your controller, subscribe wit
             () => console.log('received update from socket')
         );
 
+## Get User Details
 
+Fetch:
+
+       this.backandService.getUserDetails(true).subscribe(
+           data=> {
+               console.log(data);
+           },
+           err=> this.backandService.logError(err),
+           () => console.log('Got Details')
+           );
+
+Caches user details in the app. The `force` parameter can cause it to fetch from it from Backand as in the call above.

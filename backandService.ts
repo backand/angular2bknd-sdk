@@ -492,9 +492,37 @@ export class BackandService {
         return this.username;
     }
 
-    public getUserDetails() {
-        let userDetails = <any> localStorage.getItem('user');
-        return userDetails;
+    // user details
+    public getUsername():string {
+        return this.username;
+    }
+
+    public getUserDetails(force: boolean) {
+        if (force){
+            let $obs = this.http.get(this.api_url + '/api/account/profile', {
+                headers: this.authHeader
+            })
+            .retry(3)
+            .map(res => res.json());
+
+            $obs.subscribe(
+                data => {
+                    localStorage.setItem('user', JSON.stringify(data));
+                },
+                err => {
+                    console.log(err);
+                },
+                () => console.log('Got User Details'));
+
+            return $obs;
+        }
+        else{
+            let userDetails = localStorage.getItem('user');
+            let promise = Promise.resolve(userDetails ? JSON.parse(userDetails) : null);
+            let $obs = Observable.fromPromise(promise);
+            return $obs;
+        }
+
     }
 
     public getUserRole(): string {
