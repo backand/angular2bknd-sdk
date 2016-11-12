@@ -94,3 +94,29 @@ Fetch:
            );
 
 Caches user details in the app. The `force` parameter can cause it to fetch from it from Backand as in the call above.
+
+## Backand Storage
+
+### Create Backand Action
+
+Create a server side action in Backand by going into the items object actions tab and clicking on the Back& Files icon. Name your action "files"
+
+### File Upload
+
+    backand.upload('todo', 'files', fileName, base64Data).subscribe(
+          data => { 
+            console.log(data);
+            //data.url is the url of the uploaded file
+          }, 
+          err => backand.logError(err),
+          () => console.log('OK')
+        );
+
+### File Delete
+
+    backand.delete('todo', 'files', fileName).subscribe(
+          data => { 
+          }, 
+          err => backand.logError(err),
+          () => console.log('OK')
+        );
