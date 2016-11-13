@@ -2,7 +2,7 @@
 
 Backand SDK for Angular 2 
 
-Compsatible with AngularJS 2.0.0
+Compatible with AngularJS 2.0.0
 
 ## install
 
@@ -19,7 +19,7 @@ In `src/app/app.module.ts`,
 
     import { BackandService } from 'angular2bknd-sdk';
 
-add `BackandService` to the `providers` aray.
+add `BackandService` to the `providers` array.
 
 In each component where you use Backand, import it:
 
@@ -68,7 +68,7 @@ The app opens a dialog supplied by the social network.
 * Socket login and logout are done automatially as part of the login and logout calls, respectively.
 
 I* To subscribe to event `items_updated` from server side via sockets, 
-call `this.backandService.susbcribeSocket` and in your controller, subscribe with,
+call `this.backandService.subscribeSocket` and in your controller, subscribe with,
 
     this.backandService.subscribeSocket('items_updated')
       .subscribe(
