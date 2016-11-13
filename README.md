@@ -40,7 +40,7 @@ Use it as `this.backandService`
         this.backandService.setAnonymousToken('your backand anonymous token');
 
 2. Do we call signup if we tried to sign in via a social network, 
-   and the user is not signed up for the app? (true by defaule)
+   and the user is not signed up for the app? (true by default)
 
         this.backandService.setRunSignupAfterErrorInSigninSocial(true);
 
