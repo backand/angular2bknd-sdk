@@ -19,7 +19,7 @@ In `src/app/app.module.ts`,
 
     import { BackandService } from 'angular2bknd-sdk';
 
-add `BackandService` to the `providers` aray.
+add `BackandService` to the `providers` array.
 
 In each component where you use Backand, import it:
 
@@ -40,7 +40,6 @@ In `src/app/app.component.ts`:
         this.backandService.setAppName('your app name');
         this.backandService.setSignUpToken('your backand signup token');
         this.backandService.setAnonymousToken('your backand anonymous token');
-
 
 ## Mobile
 
@@ -91,7 +90,7 @@ When `q` is set to your search pattern,
 
 The app opens a dialog supplied by the social network. 
 
-    var $obs = this.backandService.socialSignup(provider);
+    var $obs = this.backandService.socialSignup(provider, spec);
     $obs.subscribe(                
       data => {
           console.log('Sign up succeeded with:' + provider);           
@@ -101,13 +100,18 @@ The app opens a dialog supplied by the social network.
       },
       () => console.log('Finish Auth'));
 
+* `provider` is one of: facebook, twitter, googleplus, github
+* `spec` optionally defines the look of the social network sign in window, like:
+
+     left=1, top=1, width=600, height=600
+
 
 ## Socket Service
   
 * Socket login and logout are done automatially as part of the login and logout calls, respectively.
 
 I* To subscribe to event `items_updated` from server side via sockets, 
-call `this.backandService.susbcribeSocket` and in your controller, subscribe with,
+call `this.backandService.subscribeSocket` and in your controller, subscribe with,
 
     this.backandService.subscribeSocket('items_updated')
       .subscribe(
