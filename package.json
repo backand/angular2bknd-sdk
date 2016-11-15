@@ -1,6 +1,6 @@
 {
   "name": "angular2bknd-sdk",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Typescript SDK for Backand",
   "main": "src/backandService.ts",
   "author": "Yoram Kornatzky",
