@@ -265,7 +265,15 @@ export class BackandService {
 
     } 
 
-    public socialAuth(provider: string, isSignUp: boolean, spec: any = null, email: string = null) 
+    public socialSignin(provider: string, spec: any = null, email: string = null) {
+        this.socialAuth(provider, false, spec, email);
+    }
+
+    public socialSignup(provider: string, spec: any = null, email: string = null) {
+        this.socialAuth(provider, true, spec, email);
+    }
+
+    private socialAuth(provider: string, isSignUp: boolean, spec: any = null, email: string = null) 
     {
         if (!this.statusLogin){
             this.statusLogin = new Subject<EVENTS>();

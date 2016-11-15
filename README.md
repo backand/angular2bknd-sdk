@@ -2,9 +2,9 @@
 
 Backand SDK for Angular 2 
 
-Compsatible with AngularJS 2.0.0
+Compatible with AngularJS 2.0.0
 
-## install
+## Install
 
     npm install angular2bknd-sdk --save
 
@@ -31,18 +31,15 @@ and then in the constructor:
 
 Use it as `this.backandService`
 
-## Set Your App Details
+## Configure secure calls to Backand's REST API
 
-1. In `src/app/app.component.ts`:
+Backand uses OAuth2 authentication, which requires that you include the authentication token in every HTTP call.
+
+In `src/app/app.component.ts`:
     
         this.backandService.setAppName('your app name');
         this.backandService.setSignUpToken('your backand signup token');
         this.backandService.setAnonymousToken('your backand anonymous token');
-
-2. Do we call signup if we tried to sign in via a social network, 
-   and the user is not signed up for the app? (true by defaule)
-
-        this.backandService.setRunSignupAfterErrorInSigninSocial(true);
 
 
 ## Mobile
@@ -51,17 +48,59 @@ In `src/app/app.component.ts`:
 
     this.backandService.setIsMobile(true);
 
-## CRUD
+## Do CRUD Operations on Your Database
 
-To fetch, create, and filter rows, from an object, say `stuff`, the CRUD functions in BackandService, should receive `'stuff'` as their first argument
+To fetch, create, and filter rows, from an object, say `todo`, the CRUD functions in BackandService, should receive `'todo'` as their first argument
 
-    getItems
-    filterItems
-    postItem
+1. Read
+
+    this.backandService.getItems('todo')
+        .subscribe(
+                data => {
+                },
+                err => this.backandService.logError(err),
+                () => console.log('OK')
+            );
+
+
+2. Create
+
+    this.backandService.postItem('todo', this.name, this.description)
+        .subscribe(
+                data => {
+                },
+                err => this.backandService.logError(err),
+                () => console.log('OK')
+            );
+
+3. Query
+
+When `q` is set to your search pattern, 
+
+    this.backandService.filterItems('todo', q)
+            .subscribe(
+                data => {
+                    console.log("subscribe", data);
+                    this.items = data;
+                },
+                err => this.backandService.logError(err),
+                () => console.log('OK')
+            );
 
 ## Social Signup 
 
 The app opens a dialog supplied by the social network. 
+
+    var $obs = this.backandService.socialSignup(provider);
+    $obs.subscribe(                
+      data => {
+          console.log('Sign up succeeded with:' + provider);           
+      },
+      err => {
+          this.backandService.logError(err)
+      },
+      () => console.log('Finish Auth'));
+
 
 ## Socket Service
   
