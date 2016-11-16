@@ -266,11 +266,11 @@ export class BackandService {
     } 
 
     public socialSignin(provider: string, spec: any = null, email: string = null) {
-        this.socialAuth(provider, false, spec, email);
+        return this.socialAuth(provider, false, spec, email);
     }
 
     public socialSignup(provider: string, spec: any = null, email: string = null) {
-        this.socialAuth(provider, true, spec, email);
+        return this.socialAuth(provider, true, spec, email);
     }
 
     private socialAuth(provider: string, isSignUp: boolean, spec: any = null, email: string = null) 
