@@ -64,7 +64,7 @@ To fetch, create, and filter rows, from an object, say `todo`, the CRUD function
 
 2. Create
 
-    this.backandService.postItem('todo', this.name, this.description)
+    this.backandService.postItem('todo', { name: this.name, description: this.description})
         .subscribe(
                 data => {
                 },
@@ -74,9 +74,17 @@ To fetch, create, and filter rows, from an object, say `todo`, the CRUD function
 
 3. Query
 
-When `q` is set to your search pattern, 
+When `q` is set to your search pattern, define a filter:
 
-    this.backandService.filterItems('todo', q)
+    let filter = [{
+                fieldName: 'name',
+                operator: 'contains',
+                value: q
+              }];
+
+and call `filterItem` 
+
+    this.backandService.filterItems('todo', filter)
             .subscribe(
                 data => {
                     console.log("subscribe", data);

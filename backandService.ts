@@ -415,8 +415,8 @@ export class BackandService {
     //     }
     // }
 
-    public postItem(object, name, description) {
-        let data = JSON.stringify({ name: name, description: description });
+    public postItem(object, item) {
+        let data = JSON.stringify(item);
 
         return this.http.post(this.api_url + '/1/objects/' + object + '?returnObject=true', data,
             {
@@ -434,17 +434,8 @@ export class BackandService {
             .map(res => res.json().data);
     }
 
-    public filterItems(object, query) {
-        let filter = 
-            [
-              {
-                fieldName: 'name',
-                operator: 'contains',
-                value: query
-              }
-            ]
-        ;
-
+    public filterItems(object, filter) {
+        
         return this.http.get(this.api_url + '/1/objects/' + object + '?filter=' + encodeURI(JSON.stringify(filter)), 
             {
                 headers: this.authHeader
