@@ -53,7 +53,7 @@ To fetch, create, and filter rows, from an object, say `todo`, the CRUD function
 
 1. Read
 
-    this.backandService.getItems('todo')
+    this.backandService.getList('todo')
         .subscribe(
                 data => {
                 },
@@ -64,7 +64,7 @@ To fetch, create, and filter rows, from an object, say `todo`, the CRUD function
 
 2. Create
 
-    this.backandService.postItem('todo', { name: this.name, description: this.description})
+    this.backandService.create('todo', { name: this.name, description: this.description})
         .subscribe(
                 data => {
                 },
@@ -84,7 +84,7 @@ When `q` is set to your search pattern, define a filter:
 
 and call `filterItem` 
 
-    this.backandService.filterItems('todo', filter)
+    this.backandService.getList('todo', null, null, filter)
             .subscribe(
                 data => {
                     console.log("subscribe", data);
@@ -154,7 +154,7 @@ Create a server side action in Backand by going into the items object actions ta
 
 ### File Upload
 
-    backand.upload('todo', 'files', fileName, base64Data).subscribe(
+    backand.uploadFile('todo', 'files', fileName, base64Data).subscribe(
           data => { 
             console.log(data);
             //data.url is the url of the uploaded file
