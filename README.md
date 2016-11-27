@@ -51,19 +51,21 @@ In `src/app/app.component.ts`:
 
 To fetch, create, and filter rows, from an object, say `todo`, the CRUD functions in BackandService, should receive `'todo'` as their first argument
 
-1. Read
+1. Read one row
 
-    this.backandService.getList('todo')
+```
+    this.backandService.getOne('todo')
         .subscribe(
                 data => {
                 },
                 err => this.backandService.logError(err),
                 () => console.log('OK')
             );
-
+```
 
 2. Create
 
+```
     this.backandService.create('todo', { name: this.name, description: this.description})
         .subscribe(
                 data => {
@@ -71,19 +73,35 @@ To fetch, create, and filter rows, from an object, say `todo`, the CRUD function
                 err => this.backandService.logError(err),
                 () => console.log('OK')
             );
+```
 
-3. Query
+3. Update
+
+```
+    this.backandService.update('todo', this.id, { name: this.name, description: this.description})
+        .subscribe(
+                data => {
+                },
+                err => this.backandService.logError(err),
+                () => console.log('OK')
+            );
+```
+
+4. Query
 
 When `q` is set to your search pattern, define a filter:
 
+```
     let filter = [{
                 fieldName: 'name',
                 operator: 'contains',
                 value: q
               }];
+```
 
 and call `filterItem` 
 
+```
     this.backandService.getList('todo', null, null, filter)
             .subscribe(
                 data => {
@@ -93,11 +111,13 @@ and call `filterItem`
                 err => this.backandService.logError(err),
                 () => console.log('OK')
             );
+```
 
 ## Social Signup 
 
 The app opens a dialog supplied by the social network. 
 
+```
     var $obs = this.backandService.socialSignup(provider, spec);
     $obs.subscribe(                
       data => {
@@ -107,6 +127,7 @@ The app opens a dialog supplied by the social network.
           this.backandService.logError(err)
       },
       () => console.log('Finish Auth'));
+```
 
 * `provider` is one of: facebook, twitter, googleplus, github
 * `spec` optionally defines the look of the social network sign in window, like:
