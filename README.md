@@ -152,7 +152,7 @@ The app opens a dialog supplied by the social network.
   
 * Socket login and logout are done automatially as part of the login and logout calls, respectively.
 
-I* To subscribe to event `items_updated` from server side via sockets, 
+* To subscribe to event `items_updated` from server side via sockets, 
 call `this.backandService.subscribeSocket` and in your controller, subscribe with,
 
     this.backandService.subscribeSocket('items_updated')
