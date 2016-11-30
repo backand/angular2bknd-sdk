@@ -199,7 +199,7 @@ Create a server side action in Backand by going into the items object actions ta
 
 ### File Delete
 
-    backand.delete('todo', 'files', fileName).subscribe(
+    backand.deleteFile('todo', 'files', fileName).subscribe(
           data => { 
           }, 
           err => backand.logError(err),
