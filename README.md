@@ -51,7 +51,7 @@ In `src/app/app.component.ts`:
 
 To fetch, create, and filter rows, from an object, say `todo`, the CRUD functions in BackandService, should receive `'todo'` as their first argument
 
-1. Read one row
+* Read one row
 
 ```
     this.backandService.getOne('todo')
@@ -63,7 +63,7 @@ To fetch, create, and filter rows, from an object, say `todo`, the CRUD function
             );
 ```
 
-2. Create
+* Create
 
 ```
     this.backandService.create('todo', { name: this.name, description: this.description})
@@ -75,7 +75,7 @@ To fetch, create, and filter rows, from an object, say `todo`, the CRUD function
             );
 ```
 
-3. Update
+* Update
 
 ```
     this.backandService.update('todo', this.id, { name: this.name, description: this.description})
@@ -87,7 +87,7 @@ To fetch, create, and filter rows, from an object, say `todo`, the CRUD function
             );
 ```
 
-4. Query
+* Query
 
 When `q` is set to your search pattern, define a filter:
 
@@ -97,6 +97,19 @@ When `q` is set to your search pattern, define a filter:
                 operator: 'contains',
                 value: q
               }];
+```
+
+Or use NoSQL syntax:
+
+```
+    let filter = {
+        "q":{
+            "name" : { 
+                "$like" :  q
+            }
+        }
+    }
+
 ```
 
 and call `filterItem` 
