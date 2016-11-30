@@ -153,30 +153,34 @@ The app opens a dialog supplied by the social network.
 * Socket login and logout are done automatially as part of the login and logout calls, respectively.
 
 * To subscribe to event `items_updated` from server side via sockets, 
-call `this.backandService.subscribeSocket` and in your controller, subscribe with,
+call `this.backandService.on` and in your controller, subscribe with:
 
-    this.backandService.subscribeSocket('items_updated')
+```
+    this.backandService.on('items_updated')
       .subscribe(
             data => {
-             
+                console.log("items_updated", data);
             },
             err => {
                 console.log(err);
             },
             () => console.log('received update from socket')
         );
+```
 
 ## Get User Details
 
 Fetch:
 
-       this.backandService.getUserDetails(true).subscribe(
-           data=> {
-               console.log(data);
-           },
-           err=> this.backandService.logError(err),
-           () => console.log('Got Details')
-           );
+```
+    this.backandService.getUserDetails(true).subscribe(
+       data=> {
+           console.log(data);
+       },
+       err=> this.backandService.logError(err),
+       () => console.log('Got Details')
+       );
+```
 
 Caches user details in the app. The `force` parameter can cause it to fetch from it from Backand as in the call above.
 
@@ -188,6 +192,7 @@ Create a server side action in Backand by going into the items object actions ta
 
 ### File Upload
 
+```
     backand.uploadFile('todo', 'files', fileName, base64Data).subscribe(
           data => { 
             console.log(data);
@@ -196,12 +201,15 @@ Create a server side action in Backand by going into the items object actions ta
           err => backand.logError(err),
           () => console.log('OK')
         );
+```
 
 ### File Delete
 
+```
     backand.deleteFile('todo', 'files', fileName).subscribe(
           data => { 
           }, 
           err => backand.logError(err),
           () => console.log('OK')
         );
+```
