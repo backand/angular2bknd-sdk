@@ -37,7 +37,7 @@ export const ERRORS = {
 }());
 
 import {Observable, BehaviorSubject, Subject} from 'rxjs';
-import {Http, Headers, URLSearchParams} from '@angular/http'
+import {Http, Headers, URLSearchParams, Response} from '@angular/http'
 import {Injectable} from '@angular/core';
 // import {Facebook} from 'ionic-native';
 import * as io from 'socket.io-client';
