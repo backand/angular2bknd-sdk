@@ -15,10 +15,10 @@ export declare class BackandService {
     socialSignup(provider: string, email: string, scb?: (response?: Response) => void, ecb?: (error?: Response) => void): any;
     requestResetPassword(username: string, scb?: (response?: Response) => void, ecb?: (error?: Response) => void): any;
     resetPassword(newPassword: string, resetToken: string, scb?: (response?: Response) => void, ecb?: (error?: Response) => void): any;
-    changePassword(): any;
+    changePassword(oldPassword: string, newPassword: string, scb?: (response?: Response) => void, ecb?: (error?: Response) => void): any;
     signout(scb?: (response?: Response) => void): any;
     getSocialProviders(scb?: (response?: Response) => void): any;
-    on(eventName: string, callback: (response?: Response) => void): void;
+    on(eventName: string, callback?: (response?: any) => void): void;
 }
 export declare class Response {
     status: number;

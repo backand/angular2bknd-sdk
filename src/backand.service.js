@@ -20,6 +20,7 @@ var BackandService = (function () {
             _this[key] = backand[key];
         });
     };
+    // auth
     BackandService.prototype.useAnonymousAuth = function (scb) { };
     ;
     BackandService.prototype.signin = function (username, password, scb, ecb) { };
@@ -42,6 +43,7 @@ var BackandService = (function () {
     ;
     BackandService.prototype.getSocialProviders = function (scb) { };
     ;
+    // socket
     BackandService.prototype.on = function (eventName, callback) { };
     ;
     return BackandService;
