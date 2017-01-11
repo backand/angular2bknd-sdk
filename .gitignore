@@ -1,2 +1,8 @@
-node_modules
-.idea
+# Dependency directory
+node_modules/**
+
+# scribble
+__scribble__/**
+
+# npm build
+angular2bknd-sdk-1.1.0.tgz
