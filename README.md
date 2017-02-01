@@ -1,4 +1,5 @@
 # angular2bknd-sdk
+*NOTE* - This SDK is deprecated, please use our new SDK at https://github.com/backand/angular2-sdk
 
 Backand SDK for Angular 2 
 
